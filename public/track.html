@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Redirecting…</title>
+</head>
+
+<body>
+
+<script>
+function detectBrowser() {
+  const ua = navigator.userAgent;
+
+  if (/Edg\//i.test(ua)) return "Microsoft Edge";
+  if (/OPR\//i.test(ua)) return "Opera";
+  if (/Chrome\//i.test(ua) && !/Edg\//i.test(ua)) return "Google Chrome";
+  if (/Firefox\//i.test(ua)) return "Mozilla Firefox";
+  if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) return "Safari";
+
+  return "Unknown";
+}
+
+function detectOS() {
+  const ua = navigator.userAgent;
+
+  if (/Windows NT/i.test(ua)) return "Windows";
+  if (/Android/i.test(ua)) return "Android";
+  if (/iPhone|iPad|iPod/i.test(ua)) return "iOS";
+  if (/Mac OS X/i.test(ua)) return "macOS";
+  if (/Linux/i.test(ua)) return "Linux";
+
+  return "Unknown";
+}
+
+function detectDeviceType() {
+  const ua = navigator.userAgent;
+
+  if (/iPad|Tablet|Android(?!.*Mobile)/i.test(ua)) {
+    return "Tablet";
+  }
+
+  if (/Mobile|iPhone|iPod|Android/i.test(ua)) {
+    return "Mobile";
+  }
+
+  return "Desktop";
+}
+
+async function getBatteryPercentage() {
+  if (!("getBattery" in navigator)) {
+    return null;
+  }
+
+  try {
+    const battery = await navigator.getBattery();
+
+    return Math.round(battery.level * 100);
+  } catch {
+    return null;
+  }
+}
+
+function getDeviceInfo() {
+  return {
+    type: detectDeviceType(),
+    browser: detectBrowser(),
+    os: detectOS(),
+    userAgent: navigator.userAgent
+  };
+}
+
+function getScreenInfo() {
+  return {
+    width: Number.isInteger(screen.width)
+      ? screen.width
+      : null,
+
+    height: Number.isInteger(screen.height)
+      ? screen.height
+      : null,
+
+    availWidth: Number.isInteger(screen.availWidth)
+      ? screen.availWidth
+      : null,
+
+    availHeight: Number.isInteger(screen.availHeight)
+      ? screen.availHeight
+      : null,
+
+    viewportWidth: Number.isInteger(window.innerWidth)
+      ? window.innerWidth
+      : null,
+
+    viewportHeight: Number.isInteger(window.innerHeight)
+      ? window.innerHeight
+      : null,
+
+    pixelRatio:
+      typeof window.devicePixelRatio === "number"
+        ? window.devicePixelRatio
+        : null,
+
+    colorDepth: Number.isInteger(screen.colorDepth)
+      ? screen.colorDepth
+      : null
+  };
+}
+
+async function recordVisit() {
+  const battery = await getBatteryPercentage();
+
+  const device = getDeviceInfo();
+  const screenInfo = getScreenInfo();
+
+  try {
+    const response = await fetch("/api/record", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        battery,
+        device,
+        screen: screenInfo
+      }),
+
+      cache: "no-store",
+      keepalive: true
+    });
+
+    if (!response.ok) {
+      throw new Error("Record request failed");
+    }
+
+  } catch (error) {
+    console.error("Could not record visit:", error);
+  }
+
+  // Always continue to Reddit.
+  window.location.replace("https://www.reddit.com/");
+}
+
+recordVisit();
+</script>
+
+</body>
+</html>

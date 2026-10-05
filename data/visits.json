@@ -1,0 +1,38 @@
+[
+  {
+    "ip": "127.0.0.1",
+    "battery": 100,
+    "time": "2026-10-05T15:12:49.622Z"
+  },
+  {
+    "ip": "127.0.0.1",
+    "battery": 100,
+    "time": "2026-10-05T15:18:22.810Z"
+  },
+  {
+    "ip": "127.0.0.1",
+    "battery": 100,
+    "device": {
+      "type": "Desktop",
+      "browser": "Google Chrome",
+      "os": "Windows",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+    },
+    "screen": {
+      "width": 1280,
+      "height": 720,
+      "availWidth": 1280,
+      "availHeight": 672,
+      "viewportWidth": 1280,
+      "viewportHeight": 585,
+      "pixelRatio": 1.5,
+      "colorDepth": 24
+    },
+    "location": {
+      "country": null,
+      "region": null,
+      "city": null
+    },
+    "time": "2026-10-05T15:26:21.462Z"
+  }
+]
